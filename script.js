@@ -6,16 +6,16 @@
     // =============================================
     const transformations = [
         {
-            before: 'assets/images/before-1.jpg',
-            after: 'assets/images/after-1.jpg'
+            before: 'assets/images/before-1.webp',
+            after: 'assets/images/after-1.webp'
         },
         {
-            before: 'assets/images/before-2.jpg',
-            after: 'assets/images/after-2.jpg'
+            before: 'assets/images/before-2.webp',
+            after: 'assets/images/after-2.webp'
         },
         {
-            before: 'assets/images/before-3.jpg',
-            after: 'assets/images/after-3.jpg'
+            before: 'assets/images/before-3.webp',
+            after: 'assets/images/after-3.webp'
         }
     ];
 
