@@ -13,7 +13,7 @@
         }
         if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
             SUPABASE_URL === 'bsfkvyvgtyubskihmgzx' ||
-            SUPABASE_ANON_KEY === 'sb_publishable_dET_mBCXvlwwWnWIuULVdA_UtCXKZgO') {
+            SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZmt2eXZndHl1YnNraWhtZ3p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY2ODAsImV4cCI6MjEwNTA3MjY4MH0.6_D-oVhMbLneNEX_rgqdejnRpHojIwjknSeRvBwKr9c') {
             console.error('Supabase credentials not configured');
             return null;
         }
