@@ -12,8 +12,8 @@
             return null;
         }
         if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
-            SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL' ||
-            SUPABASE_ANON_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') {
+            SUPABASE_URL === 'bsfkvyvgtyubskihmgzx' ||
+            SUPABASE_ANON_KEY === 'sb_publishable_dET_mBCXvlwwWnWIuULVdA_UtCXKZgO') {
             console.error('Supabase credentials not configured');
             return null;
         }
