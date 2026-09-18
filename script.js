@@ -1,25 +1,201 @@
 (function () {
     'use strict';
 
+    const WHATSAPP_NUMBER = '233500940089';
+
     // =============================================
-    // Before/After Data Structure
+    // Fallback Content (used when Supabase is unavailable)
     // =============================================
-    const transformations = [
+    const fallbackServices = [
         {
-            before: 'assets/images/after-1.webp',
-            after: 'assets/images/before-1.webp'
+            service_number: 1,
+            title: 'Residential Cleaning',
+            description: 'Professional cleaning for homes, apartments, bedrooms, kitchens, bathrooms and everyday living spaces.',
+            icon: 'fa-house',
+            image_url: 'assets/images/service-residential.webp'
         },
         {
-            before: 'assets/images/after-2.webp',
-            after: 'assets/images/before-2.webp'
+            service_number: 2,
+            title: 'Commercial Cleaning',
+            description: 'Cleaning solutions for offices, shops, workplaces and commercial environments.',
+            icon: 'fa-building',
+            image_url: 'assets/images/service-commercial.webp'
         },
         {
-            before: 'assets/images/after-3.webp',
-            after: 'assets/images/before-3.webp'
+            service_number: 3,
+            title: 'Deep Cleaning',
+            description: 'Detailed cleaning for spaces requiring more intensive attention.',
+            icon: 'fa-broom',
+            image_url: 'assets/images/service-deep.webp'
+        },
+        {
+            service_number: 4,
+            title: 'Move-In / Move-Out Cleaning',
+            description: 'Prepare a property for a new occupant or leave it ready for the next one.',
+            icon: 'fa-box-open',
+            image_url: 'assets/images/service-move.webp'
+        },
+        {
+            service_number: 5,
+            title: 'Post-Construction Cleaning',
+            description: 'Detailed cleaning to remove construction dust, residue and debris from completed spaces.',
+            icon: 'fa-hard-hat',
+            image_url: 'assets/images/service-construction.webp'
+        },
+        {
+            service_number: 6,
+            title: 'Property & Office Maintenance',
+            description: 'Routine cleaning support for spaces that need to remain consistently clean and presentable.',
+            icon: 'fa-clipboard-check',
+            image_url: 'assets/images/service-maintenance.webp'
         }
     ];
 
-    const WHATSAPP_NUMBER = '233500940089';
+    const fallbackTransformations = [
+        { before: 'assets/images/after-1.webp', after: 'assets/images/before-1.webp', title: 'Transformation 1' },
+        { before: 'assets/images/after-2.webp', after: 'assets/images/before-2.webp', title: 'Transformation 2' },
+        { before: 'assets/images/after-3.webp', after: 'assets/images/before-3.webp', title: 'Transformation 3' }
+    ];
+
+    let transformations = [];
+
+    // =============================================
+    // Supabase Client
+    // =============================================
+    let supabaseClient = null;
+
+    function initSupabase() {
+        if (typeof supabase !== 'undefined' &&
+            typeof SUPABASE_URL !== 'undefined' &&
+            typeof SUPABASE_ANON_KEY !== 'undefined' &&
+            SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' &&
+            SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_PUBLISHABLE_KEY') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        return supabaseClient;
+    }
+
+    // =============================================
+    // Services — Dynamic Loading
+    // =============================================
+    const servicesGrid = document.getElementById('services-grid');
+
+    function renderServiceSkeletons(count) {
+        if (!servicesGrid) return;
+        servicesGrid.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const skeleton = document.createElement('article');
+            skeleton.className = 'service-card-skeleton';
+            skeleton.innerHTML =
+                '<div class="skeleton-image"></div>' +
+                '<div class="skeleton-body">' +
+                    '<div class="skeleton-icon"></div>' +
+                    '<div class="skeleton-line title"></div>' +
+                    '<div class="skeleton-line"></div>' +
+                    '<div class="skeleton-line"></div>' +
+                    '<div class="skeleton-line short"></div>' +
+                '</div>';
+            servicesGrid.appendChild(skeleton);
+        }
+    }
+
+    function createServiceCard(service, index) {
+        const num = String(service.service_number || (index + 1)).padStart(2, '0');
+        const iconClass = service.icon || 'fa-broom';
+        const card = document.createElement('article');
+        card.className = 'service-card reveal fade-in';
+        card.innerHTML =
+            '<span class="service-num">' + num + '</span>' +
+            '<div class="service-card-image">' +
+                '<img src="' + service.image_url + '" alt="' + service.title + '" loading="lazy">' +
+            '</div>' +
+            '<div class="service-card-body">' +
+                '<div class="service-icon"><i class="fa-solid ' + iconClass + '" aria-hidden="true"></i></div>' +
+                '<h3>' + service.title + '</h3>' +
+                '<p>' + service.description + '</p>' +
+                '<a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+            '</div>';
+        return card;
+    }
+
+    function renderServices(services) {
+        if (!servicesGrid) return;
+        servicesGrid.innerHTML = '';
+
+        services.forEach(function (service, index) {
+            servicesGrid.appendChild(createServiceCard(service, index));
+        });
+
+        observeRevealElements(servicesGrid.querySelectorAll('.reveal'));
+    }
+
+    async function loadServices() {
+        renderServiceSkeletons(6);
+
+        if (!supabaseClient) {
+            renderServices(fallbackServices);
+            return;
+        }
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('services')
+                .select('*')
+                .eq('is_active', true)
+                .order('display_order', { ascending: true });
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                renderServices(data);
+            } else {
+                renderServices(fallbackServices);
+            }
+        } catch (err) {
+            console.error('Failed to load services:', err);
+            renderServices(fallbackServices);
+        }
+    }
+
+    // =============================================
+    // Before/After — Dynamic Loading
+    // =============================================
+    async function loadTransformations() {
+        if (!supabaseClient) {
+            return fallbackTransformations;
+        }
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('before_after')
+                .select('*')
+                .eq('is_active', true)
+                .order('display_order', { ascending: true });
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                return data.map(function (item) {
+                    return {
+                        before: item.before_image_url,
+                        after: item.after_image_url,
+                        title: item.title || ''
+                    };
+                });
+            }
+        } catch (err) {
+            console.error('Failed to load transformations:', err);
+        }
+
+        return fallbackTransformations;
+    }
+
+    function showSliderSkeleton() {
+        const sliderTrack = document.getElementById('slider-track');
+        if (sliderTrack) {
+            sliderTrack.innerHTML = '<div class="slider-slide"><div class="slider-skeleton"></div></div>';
+        }
+    }
 
     // =============================================
     // Mobile Navigation
@@ -132,29 +308,36 @@
     // =============================================
     // Scroll Reveal
     // =============================================
-    const revealElements = document.querySelectorAll('.reveal');
+    let revealObserver = null;
 
-    if ('IntersectionObserver' in window) {
-        const revealObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    revealObserver.unobserve(entry.target);
-                }
+    function observeRevealElements(elements) {
+        if (!elements || !elements.length) return;
+
+        if ('IntersectionObserver' in window) {
+            if (!revealObserver) {
+                revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+            }
+            elements.forEach(function (el) {
+                revealObserver.observe(el);
             });
-        }, {
-            threshold: 0.12,
-            rootMargin: '0px 0px -40px 0px'
-        });
-
-        revealElements.forEach(function (el) {
-            revealObserver.observe(el);
-        });
-    } else {
-        revealElements.forEach(function (el) {
-            el.classList.add('visible');
-        });
+        } else {
+            elements.forEach(function (el) {
+                el.classList.add('visible');
+            });
+        }
     }
+
+    observeRevealElements(document.querySelectorAll('.reveal'));
 
     // =============================================
     // Before/After Slider — Comparison Component
@@ -248,10 +431,16 @@
     let touchStartX = 0;
     let touchEndX = 0;
 
-    if (sliderTrack && transformations.length) {
-        slideTotal.textContent = String(transformations.length).padStart(2, '0');
+    function initSlider(slides) {
+        if (!sliderTrack || !slides.length) return;
 
-        transformations.forEach(function (item, index) {
+        transformations = slides;
+        sliderTrack.innerHTML = '';
+        sliderDots.innerHTML = '';
+
+        slideTotal.textContent = String(slides.length).padStart(2, '0');
+
+        slides.forEach(function (item, index) {
             sliderTrack.appendChild(createComparison(item.before, item.after, index));
 
             const dot = document.createElement('button');
@@ -266,55 +455,80 @@
             sliderDots.appendChild(dot);
         });
 
-        function goToSlide(index) {
-            currentSlide = ((index % transformations.length) + transformations.length) % transformations.length;
-            sliderTrack.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-            slideCurrent.textContent = String(currentSlide + 1).padStart(2, '0');
+        currentSlide = 0;
+        sliderTrack.style.transform = 'translateX(0)';
+        slideCurrent.textContent = '01';
+        startAutoSlide();
+    }
 
-            sliderDots.querySelectorAll('.slider-dot').forEach(function (dot, i) {
-                dot.classList.toggle('active', i === currentSlide);
-                dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
+    function goToSlide(index) {
+        if (!transformations.length) return;
+        currentSlide = ((index % transformations.length) + transformations.length) % transformations.length;
+        sliderTrack.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+        slideCurrent.textContent = String(currentSlide + 1).padStart(2, '0');
+
+        sliderDots.querySelectorAll('.slider-dot').forEach(function (dot, i) {
+            dot.classList.toggle('active', i === currentSlide);
+            dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
+        });
+    }
+
+    function nextSlide() {
+        goToSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        goToSlide(currentSlide - 1);
+    }
+
+    function startAutoSlide() {
+        stopAutoSlide();
+        autoSlideTimer = setInterval(function () {
+            if (!isPaused) {
+                nextSlide();
+            }
+        }, 5000);
+    }
+
+    function stopAutoSlide() {
+        if (autoSlideTimer) {
+            clearInterval(autoSlideTimer);
+            autoSlideTimer = null;
+        }
+    }
+
+    function resetAutoSlide() {
+        stopAutoSlide();
+        startAutoSlide();
+    }
+
+    function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+    }
+
+    if (sliderTrack) {
+        showSliderSkeleton();
+
+        if (sliderPrev) {
+            sliderPrev.addEventListener('click', function () {
+                prevSlide();
+                resetAutoSlide();
             });
         }
 
-        function nextSlide() {
-            goToSlide(currentSlide + 1);
+        if (sliderNext) {
+            sliderNext.addEventListener('click', function () {
+                nextSlide();
+                resetAutoSlide();
+            });
         }
-
-        function prevSlide() {
-            goToSlide(currentSlide - 1);
-        }
-
-        function startAutoSlide() {
-            stopAutoSlide();
-            autoSlideTimer = setInterval(function () {
-                if (!isPaused) {
-                    nextSlide();
-                }
-            }, 5000);
-        }
-
-        function stopAutoSlide() {
-            if (autoSlideTimer) {
-                clearInterval(autoSlideTimer);
-                autoSlideTimer = null;
-            }
-        }
-
-        function resetAutoSlide() {
-            stopAutoSlide();
-            startAutoSlide();
-        }
-
-        sliderPrev.addEventListener('click', function () {
-            prevSlide();
-            resetAutoSlide();
-        });
-
-        sliderNext.addEventListener('click', function () {
-            nextSlide();
-            resetAutoSlide();
-        });
 
         if (sliderWrapper) {
             sliderWrapper.addEventListener('mouseenter', function () {
@@ -339,20 +553,16 @@
                 resetAutoSlide();
             }, { passive: true });
         }
-
-        function handleSwipe() {
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    nextSlide();
-                } else {
-                    prevSlide();
-                }
-            }
-        }
-
-        startAutoSlide();
     }
+
+    async function initDynamicContent() {
+        initSupabase();
+        await loadServices();
+        const slides = await loadTransformations();
+        initSlider(slides);
+    }
+
+    initDynamicContent();
 
     // =============================================
     // Booking Form Validation
