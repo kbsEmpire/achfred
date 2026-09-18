@@ -12,9 +12,11 @@
             return null;
         }
         if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
-            SUPABASE_URL === 'bsfkvyvgtyubskihmgzx' ||
-            SUPABASE_ANON_KEY === 'sb_publishable_dET_mBCXvlwwWnWIuULVdA_UtCXKZgO') {
+            SUPABASE_URL === "" ||
+            SUPABASE_ANON_KEY === "") {
             console.error('Supabase credentials not configured');
+            const info = document.getElementById('login-info');
+            if(info) info.textContent = 'Supabase is not configured. Update supabase-config.js.';
             return null;
         }
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
