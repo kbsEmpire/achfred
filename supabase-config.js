@@ -8,7 +8,7 @@
  * NEVER put the service_role or secret key in frontend code.
  */
 
-const SUPABASE_URL = 'bsfkvyvgtyubskihmgzx';
+const SUPABASE_URL = 'https://bsfkvyvgtyubskihmgzx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_dET_mBCXvlwwWnWIuULVdA_UtCXKZgO';
 /**
 
