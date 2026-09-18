@@ -25,3 +25,9 @@ const ALLOWED_IMAGE_TYPES = [
 
 /** Supabase Storage bucket name */
 const STORAGE_BUCKET = 'achfred-images';
+
+//create global client for public site
+let supabaseClient = null;
+if (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefined') {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
