@@ -10,6 +10,7 @@
 
 const SUPABASE_URL = 'bsfkvyvgtyubskihmgzx';
 const SUPABASE_ANON_KEY = 'sb_publishable_dET_mBCXvlwwWnWIuULVdA_UtCXKZgO';
+/**
 
 /** Maximum image upload size in bytes (5 MB) */
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
