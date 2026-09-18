@@ -158,84 +158,8 @@
                     </p>
                 </div>
 
-                <div class="services-grid">
-                    <article class="service-card reveal">
-                        <span class="service-num">01</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-residential.webp" alt="Residential cleaning service" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-house" aria-hidden="true"></i></div>
-                            <h3>Residential Cleaning</h3>
-                            <p>Professional cleaning for homes, apartments, bedrooms, kitchens, bathrooms and everyday living spaces.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="service-card reveal">
-                        <span class="service-num">02</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-commercial.webp" alt="Commercial cleaning service" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-building" aria-hidden="true"></i></div>
-                            <h3>Commercial Cleaning</h3>
-                            <p>Cleaning solutions for offices, shops, workplaces and commercial environments.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="service-card reveal">
-                        <span class="service-num">03</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-deep.webp" alt="Deep cleaning service" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-broom" aria-hidden="true"></i></div>
-                            <h3>Deep Cleaning</h3>
-                            <p>Detailed cleaning for spaces requiring more intensive attention.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="service-card reveal">
-                        <span class="service-num">04</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-move.webp" alt="Move-in move-out cleaning service" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-box-open" aria-hidden="true"></i></div>
-                            <h3>Move-In / Move-Out Cleaning</h3>
-                            <p>Prepare a property for a new occupant or leave it ready for the next one.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="service-card reveal">
-                        <span class="service-num">05</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-construction.webp" alt="Post-construction cleaning service" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-hard-hat" aria-hidden="true"></i></div>
-                            <h3>Post-Construction Cleaning</h3>
-                            <p>Detailed cleaning to remove construction dust, residue and debris from completed spaces.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="service-card reveal">
-                        <span class="service-num">06</span>
-                        <div class="service-card-image">
-                            <img src="assets/images/service-maintenance.webp" alt="Property and office maintenance cleaning" loading="lazy">
-                        </div>
-                        <div class="service-card-body">
-                            <div class="service-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></div>
-                            <h3>Property &amp; Office Maintenance</h3>
-                            <p>Routine cleaning support for spaces that need to remain consistently clean and presentable.</p>
-                            <a href="#booking" class="service-link">Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-                        </div>
-                    </article>
+                <div class="services-grid" id="services-grid" aria-live="polite">
+                    <!-- Service cards loaded dynamically from Supabase -->
                 </div>
             </div>
         </section>
@@ -481,6 +405,8 @@
         <span class="floating-whatsapp-label">Chat With Us</span>
     </a>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
